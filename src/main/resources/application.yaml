@@ -1,0 +1,28 @@
+server:
+  port: 8085
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8083/eureka
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: userService
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/**
+            - Path=/authenticate/**
+        - id: followService
+          uri: lb://FOLLOW-SERVICE
+          predicates:
+            - Path=/follow/**
+        - id: postService
+          uri: lb://POST-SERVICE
+          predicates:
+            - Path=/post/**
+
