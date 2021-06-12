@@ -2,9 +2,15 @@ server:
   port: 8085
 
 eureka:
+  instance:
+    preferIpAddress: true
+    hostname: host.docker.internal
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8083/eureka
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8083/eureka
+    healthcheck:
+      enabled: true
+    fetch-registry: true
 
 spring:
   application:
@@ -15,14 +21,21 @@ spring:
         - id: userService
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user/**
-            - Path=/authenticate/**
+            - Path=/user/{segment}
+        - id: authenticationService
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/authenticate/{segment}
         - id: followService
           uri: lb://FOLLOW-SERVICE
           predicates:
-            - Path=/follow/**
+            - Path=/follow/{segment}
         - id: postService
           uri: lb://POST-SERVICE
           predicates:
-            - Path=/post/**
+            - Path=/post/{segment}
+        - id: feedService
+          uri: lb://FEED-SERVICE
+          predicates:
+            - Path=/feed/{segment}
 
