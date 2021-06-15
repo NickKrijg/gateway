@@ -17,11 +17,27 @@ spring:
     name: gateway
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
       routes:
         - id: userService
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user/{segment}
+        - id: viewService
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/view/{segment}
+        - id: searchService
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/search/{segment}
         - id: authenticationService
           uri: lb://USER-SERVICE
           predicates:
@@ -34,6 +50,10 @@ spring:
           uri: lb://POST-SERVICE
           predicates:
             - Path=/post/{segment}
+        - id: postAllService
+          uri: lb://POST-SERVICE
+          predicates:
+            - Path=/post/getallfromuser/{segment}
         - id: feedService
           uri: lb://FEED-SERVICE
           predicates:
