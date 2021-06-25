@@ -3,11 +3,13 @@ server:
 
 eureka:
   instance:
+    nonSecurePortEnabled: true
+    nonSecurePort: 8083
     preferIpAddress: true
     hostname: host.docker.internal
   client:
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:8083/eureka
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.non-secure-port}/eureka
     healthcheck:
       enabled: true
     fetch-registry: true
@@ -17,6 +19,9 @@ spring:
     name: gateway
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: false
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       globalcors:
@@ -39,7 +44,7 @@ spring:
           predicates:
             - Path=/user/search/{segment}
         - id: authenticationService
-          uri: lb://USERSERVICE
+          uri: http://USERSERVICE
           predicates:
             - Path=/authenticate/{segment}
         - id: followService
