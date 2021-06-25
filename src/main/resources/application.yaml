@@ -44,7 +44,7 @@ spring:
           predicates:
             - Path=/user/search/{segment}
         - id: authenticationService
-          uri: tcp://USERSERVICE
+          uri: lb://USER-SERVICE
           predicates:
             - Path=/authenticate/{segment}
         - id: followService
