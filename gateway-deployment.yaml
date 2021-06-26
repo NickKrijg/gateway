@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - image: nickkrijg/gateway:latest
+          imagePullPolicy: Always
+          name: gateway
+          ports:
+            - containerPort: 8085
+          env:
+            - name: EUREKA_INSTANCE_HOSTNAME
+              value: registry
+      hostname: gateway
+      restartPolicy: Always
